@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.action_settings:
                         selectedFragment = settingsFragment;
                         break;
-                    default: break;
+                    default: selectedFragment = homeFragment;
                 }
                 fragmentManager.beginTransaction().replace(R.id.rlContainer, selectedFragment).commit();
                 return true;
