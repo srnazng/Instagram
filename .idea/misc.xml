@@ -6,10 +6,12 @@
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.36373545328776036" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20842895507812503" />
         <entry key="app/src/main/res/layout/activity_sign_up.xml" value="0.35384281858001676" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.21822916666666667" />
-        <entry key="app/src/main/res/layout/fragment_new_post.xml" value="0.2754480997721354" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_new_post.xml" value="0.10959879557291666" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.2562632242838542" />
+        <entry key="app/src/main/res/layout/item_post.xml" value="0.40444444444444444" />
         <entry key="app/src/main/res/layout/menu_bottom_navigation.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/xml/fileprovider.xml" value="0.18070652173913043" />
       </map>
     </option>
   </component>
