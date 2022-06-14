@@ -10,13 +10,13 @@
     <item
         android:id="@+id/action_post"
         android:enabled="true"
-        android:icon="@drawable/instagram_home_outline_24"
+        android:icon="@drawable/instagram_new_post_outline_24"
         android:title="post"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_settings"
         android:enabled="true"
         android:icon="@drawable/settings"
-        android:title="settingskgjjuffttlfbekrhbtdjcettedvddhcj"
+        android:title="settings"
         app:showAsAction="ifRoom" />
 </menu>

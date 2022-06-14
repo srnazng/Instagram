@@ -5,6 +5,9 @@
       <map>
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.24919687906901036" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20842895507812503" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/fragment_new_post.xml" value="0.21822916666666667" />
+        <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.2562632242838542" />
         <entry key="app/src/main/res/layout/menu_bottom_navigation.xml" value="0.20416666666666666" />
       </map>
     </option>
