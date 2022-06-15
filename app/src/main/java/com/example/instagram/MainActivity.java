@@ -5,8 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -19,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     final Fragment settingsFragment = SettingsFragment.newInstance();
 
     public Fragment selectedFragment;
+
+    private ImageView logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +56,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        logo = findViewById(R.id.ivTitleLogo);
     }
 
     public void setSelectedFragment(Fragment selectedFragment) {
         fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
     }
+
 }
