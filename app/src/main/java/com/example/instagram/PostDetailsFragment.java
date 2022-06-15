@@ -1,8 +1,13 @@
 package com.example.instagram;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.os.Parcelable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +19,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class PostDetailsActivity extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link PostDetailsFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class PostDetailsFragment extends Fragment {
     private TextView tvTimestamp;
     private TextView tvDescription;
     private TextView tvUsername;
@@ -22,23 +32,50 @@ public class PostDetailsActivity extends AppCompatActivity {
 
     private Post post;
 
+    public PostDetailsFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @return A new instance of fragment PostDetailsFragment.
+     */
+    // TODO: Rename and change types and number of parameters
+    public static PostDetailsFragment newInstance(Post post) {
+        PostDetailsFragment fragment = new PostDetailsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("post", post);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_details);
+    }
 
-        post = Parcels.unwrap(getIntent().getParcelableExtra("post"));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_post_details, container, false);
 
-        tvTimestamp = findViewById(R.id.tvTimestamp);
-        tvDescription = findViewById(R.id.tvDescription);
-        tvUsername = findViewById(R.id.tvUsername);
-        ivImage = findViewById(R.id.ivImage);
+        Bundle bundle = this.getArguments();
+        post = bundle.getParcelable("post");
+
+        tvTimestamp = view.findViewById(R.id.tvTimestamp);
+        tvDescription = view.findViewById(R.id.tvDescription);
+        tvUsername = view.findViewById(R.id.tvUsername);
+        ivImage = view.findViewById(R.id.ivImage);
         if(post.getImage() != null){
             Glide.with(this).load(post.getImage().getUrl()).into(ivImage);
         }
         tvUsername.setText(post.getUser().getUsername());
         tvDescription.setText(post.getDescription());
         tvTimestamp.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
+        return view;
     }
 
     private static final int SECOND_MILLIS = 1000;

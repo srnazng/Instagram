@@ -18,32 +18,35 @@ public class MainActivity extends AppCompatActivity {
     final Fragment newPostFragment = NewPostFragment.newInstance();
     final Fragment settingsFragment = SettingsFragment.newInstance();
 
+    public Fragment selectedFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        selectedFragment = homeFragment;
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
-        Fragment selectedFragment = homeFragment;
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_post:
-                    selectedFragment = newPostFragment;
-                    break;
-                case R.id.action_settings:
-                    selectedFragment = settingsFragment;
-                    break;
-                default: selectedFragment = homeFragment;
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_post:
+                        selectedFragment = newPostFragment;
+                        break;
+                    case R.id.action_settings:
+                        selectedFragment = settingsFragment;
+                        break;
+                    default: selectedFragment = homeFragment;
+                }
+                fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
+                return true;
             }
-            fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
-            return true;
-        }
         });
     }
 
-
+    public void setSelectedFragment(Fragment selectedFragment) {
+        fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
+    }
 }

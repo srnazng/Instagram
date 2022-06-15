@@ -56,7 +56,6 @@ public class NewPostFragment extends Fragment {
      *
      * @return A new instance of fragment NewPostFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NewPostFragment newInstance() {
         NewPostFragment fragment = new NewPostFragment();
         Bundle args = new Bundle();

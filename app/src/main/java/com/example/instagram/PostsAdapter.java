@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -94,9 +97,10 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         }
 
         public void toDetails(Post post){
-            Intent intent = new Intent(context, PostDetailsActivity.class);
-            intent.putExtra("post", Parcels.wrap(post));
-            context.startActivity(intent);
+            FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frame, PostDetailsFragment.newInstance(post));
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
 
     }
