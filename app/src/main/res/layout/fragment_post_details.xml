@@ -29,13 +29,13 @@
 
         <ImageView
             android:id="@+id/ivImage"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_width="0dp"
+            android:layout_height="500dp"
+            android:maxHeight="300dp"
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvUsername"
-            tools:layout_editor_absoluteY="100dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView

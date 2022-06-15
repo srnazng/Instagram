@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     // define fragments
     final Fragment homeFragment = HomeFragment.newInstance();
     final Fragment newPostFragment = NewPostFragment.newInstance();
+    final Fragment profileFragment = ProfileFragment.newInstance();
     final Fragment settingsFragment = SettingsFragment.newInstance();
 
     public Fragment selectedFragment;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.action_post:
                         selectedFragment = newPostFragment;
+                        break;
+                    case R.id.action_profile:
+                        selectedFragment = profileFragment;
                         break;
                     case R.id.action_settings:
                         selectedFragment = settingsFragment;
