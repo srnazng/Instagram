@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
@@ -29,6 +32,7 @@ public class PostDetailsFragment extends Fragment {
     private TextView tvDescription;
     private TextView tvUsername;
     private ImageView ivImage;
+    private ImageView ivProfilePhoto;
 
     private Post post;
 
@@ -72,8 +76,13 @@ public class PostDetailsFragment extends Fragment {
         if(post.getImage() != null){
             Glide.with(this).load(post.getImage().getUrl()).into(ivImage);
         }
+        ivProfilePhoto = view.findViewById(R.id.ivProfilePhoto);
+        ParseFile profile =  post.getUser().getParseFile("profileImage");
+        if (profile != null) {
+            Glide.with(getActivity()).load(profile.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfilePhoto);
+        }
         tvUsername.setText(post.getUser().getUsername());
-        tvDescription.setText(post.getDescription());
+        tvDescription.setText(Html.fromHtml("<b>" + post.getUser().getUsername() + "</b> " +  post.getDescription()));
         tvTimestamp.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
         return view;
     }

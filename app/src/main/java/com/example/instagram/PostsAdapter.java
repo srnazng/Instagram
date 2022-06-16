@@ -3,6 +3,7 @@ package com.example.instagram;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
 import org.parceler.Parcels;
 
 import java.util.List;
@@ -62,19 +66,21 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvUsername;
+        private ImageView ivProfile;
         private ImageView ivImage;
         private TextView tvDescription;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
+            ivProfile = itemView.findViewById(R.id.ivProfile);
             ivImage = itemView.findViewById(R.id.ivImage);
             tvDescription = itemView.findViewById(R.id.tvDescription);
         }
 
         public void bind(Post post) {
             // Bind the post data to the view elements
-            tvDescription.setText(post.getDescription());
+            tvDescription.setText(Html.fromHtml("<b>" + post.getUser().getUsername() + "</b> " +  post.getDescription()));
             tvDescription.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -93,6 +99,11 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                         toDetails(post);
                     }
                 });
+            }
+
+            ParseFile profile =  post.getUser().getParseFile("profileImage");
+            if (profile != null) {
+                Glide.with(context).load(profile.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile);
             }
         }
 
