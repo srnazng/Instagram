@@ -48,8 +48,9 @@
         android:paddingBottom="10dp"
         android:textColor="@color/black"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivImage"
-        tools:layout_editor_absoluteX="0dp"
         tools:text="caption" />
 
     <View

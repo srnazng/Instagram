@@ -73,9 +73,10 @@ public class ProfileFragment extends Fragment {
      *
      * @return A new instance of fragment ProfileFragment.
      */
-    public static ProfileFragment newInstance() {
+    public static ProfileFragment newInstance(ParseUser user) {
         ProfileFragment fragment = new ProfileFragment();
         Bundle args = new Bundle();
+        args.putParcelable("user", user);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,6 +86,9 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         allPosts = new ArrayList<>();
 
+        if (getArguments() != null) {
+            user = getArguments().getParcelable("user");
+        }
     }
 
     @Override
@@ -92,14 +96,8 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        getUserPosts();
 
-        // set user
-        user = ParseUser.getCurrentUser(); // this will now be null
-        if(user == null){
-            Intent i = new Intent(getActivity(), LoginActivity.class);
-            startActivity(i);
-        }
+        getUserPosts();
 
         // bind with view
         ivProfileImage = view.findViewById(R.id.ivProfileImage);
@@ -122,63 +120,75 @@ public class ProfileFragment extends Fragment {
         }
 
         RecyclerView recyclerView = view.findViewById(R.id.rvPostGrid);
-
-        // edit profile image
         ivEditProfileImage = view.findViewById(R.id.ivEditProfileImage);
-        ivEditProfileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
-            }
-        });
-
-        // edit bio or name
         ivFinish = view.findViewById(R.id.ivFinish);
         ivEdit = view.findViewById(R.id.ivEdit);
         etBio = view.findViewById(R.id.etBio);
         etName = view.findViewById(R.id.etName);
-        ivEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvBio.setVisibility(view.INVISIBLE);
-                tvName.setVisibility(view.INVISIBLE);
-                ivEdit.setVisibility(view.GONE);
-                etBio.setText(tvBio.getText());
-                etName.setText(tvName.getText());
-                etBio.setVisibility(view.VISIBLE);
-                etName.setVisibility(view.VISIBLE);
-                ivFinish.setVisibility(view.VISIBLE);
-            }
-        });
 
-        ivFinish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tvBio.setVisibility(view.VISIBLE);
-                tvName.setVisibility(view.VISIBLE);
-                ivEdit.setVisibility(view.VISIBLE);
+        // allow editing permissions if on current user's profile
+        if(user.getObjectId().equals(ParseUser.getCurrentUser().getObjectId())){
+            // edit profile image
+            ivEditProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+                }
+            });
 
-                etBio.setVisibility(view.INVISIBLE);
-                etName.setVisibility(view.INVISIBLE);
-                ivFinish.setVisibility(view.GONE);
+            // edit bio or name
+            ivEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tvBio.setVisibility(view.INVISIBLE);
+                    tvName.setVisibility(view.INVISIBLE);
+                    ivEdit.setVisibility(view.GONE);
+                    etBio.setText(tvBio.getText());
+                    etName.setText(tvName.getText());
+                    etBio.setVisibility(view.VISIBLE);
+                    etName.setVisibility(view.VISIBLE);
+                    ivFinish.setVisibility(view.VISIBLE);
+                }
+            });
 
-                ParseUser.getCurrentUser().put("bio", etBio.getText().toString());
-                ParseUser.getCurrentUser().put("name", etName.getText().toString());
-                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if(e != null){
-                            Log.e(TAG, "Error while saving", e);
-                            Toast.makeText(getActivity(), "Error while saving", Toast.LENGTH_SHORT).show();
-                            return;
+            ivFinish.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tvBio.setVisibility(view.VISIBLE);
+                    tvName.setVisibility(view.VISIBLE);
+                    ivEdit.setVisibility(view.VISIBLE);
+
+                    etBio.setVisibility(view.INVISIBLE);
+                    etName.setVisibility(view.INVISIBLE);
+                    ivFinish.setVisibility(view.GONE);
+
+                    user.put("bio", etBio.getText().toString());
+                    user.put("name", etName.getText().toString());
+                    user.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if(e != null){
+                                Log.e(TAG, "Error while saving", e);
+                                Toast.makeText(getActivity(), "Error while saving", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            Log.i(TAG, "Profile save was successful");
+                            tvBio.setText(etBio.getText().toString());
+                            tvName.setText(etName.getText().toString());
                         }
-                        Log.i(TAG, "Profile save was successful");
-                        tvBio.setText(etBio.getText().toString());
-                        tvName.setText(etName.getText().toString());
-                    }
-                });
+                    });
+                }
+            });
+        }
+        else{
+            ivEditProfileImage.setVisibility(view.GONE);
+            ivFinish.setVisibility(view.GONE);
+            ivEdit.setVisibility(view.GONE);
+            if(user.get("bio") == null){
+                etBio.setVisibility(view.GONE);
+                tvBio.setVisibility(view.GONE);
             }
-        });
+        }
 
         // set up the RecyclerView
         int numberOfColumns = 3;
@@ -227,8 +237,8 @@ public class ProfileFragment extends Fragment {
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
                 Glide.with(this).load(selectedImage).apply(RequestOptions.circleCropTransform()).into(ivProfileImage);
-                ParseUser.getCurrentUser().put("profileImage", conversionBitmapParseFile(bitmap));
-                ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+                user.put("profileImage", conversionBitmapParseFile(bitmap));
+                user.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
                         if(e != null){
@@ -249,8 +259,8 @@ public class ProfileFragment extends Fragment {
 
     public void getUserPosts(){
         // specify what type of data we want to query - Post.class
-        ParseQuery<Post> query = ParseQuery.getQuery(Post.class).whereEqualTo("user", ParseUser.getCurrentUser());
-        Log.i(TAG, ParseUser.getCurrentUser().getObjectId());
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class).whereEqualTo("user", user);
+        Log.i(TAG, user.getObjectId());
         // include data referred by user key
         query.include(Post.KEY_USER);
         // limit query to latest 20 items

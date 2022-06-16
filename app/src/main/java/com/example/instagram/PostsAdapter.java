@@ -1,8 +1,6 @@
 package com.example.instagram;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Parcelable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,8 +17,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
-
-import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -89,6 +84,22 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             });
 
             tvUsername.setText(post.getUser().getUsername());
+
+            // go to post creator's profile
+            tvUsername.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toProfile(post.getUser());
+                }
+            });
+            ivProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toProfile(post.getUser());
+                }
+            });
+
+            // post image
             ParseFile image = post.getImage();
             if (image != null) {
                 Glide.with(context).load(image.getUrl()).into(ivImage);
@@ -101,6 +112,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 });
             }
 
+            // profile image
             ParseFile profile =  post.getUser().getParseFile("profileImage");
             if (profile != null) {
                 Glide.with(context).load(profile.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivProfile);
@@ -110,6 +122,13 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void toDetails(Post post){
             FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frame, PostDetailsFragment.newInstance(post));
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+
+        public void toProfile(ParseUser user){
+            FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frame, ProfileFragment.newInstance(user));
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }

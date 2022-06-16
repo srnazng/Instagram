@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     // define fragments
     final Fragment homeFragment = HomeFragment.newInstance();
     final Fragment newPostFragment = NewPostFragment.newInstance();
-    final Fragment profileFragment = ProfileFragment.newInstance();
+    final Fragment profileFragment = ProfileFragment.newInstance(ParseUser.getCurrentUser());
     final Fragment settingsFragment = SettingsFragment.newInstance();
 
     public Fragment selectedFragment;

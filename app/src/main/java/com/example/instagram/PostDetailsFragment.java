@@ -3,6 +3,8 @@ package com.example.instagram;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Parcelable;
 import android.text.Html;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -84,6 +87,21 @@ public class PostDetailsFragment extends Fragment {
         tvUsername.setText(post.getUser().getUsername());
         tvDescription.setText(Html.fromHtml("<b>" + post.getUser().getUsername() + "</b> " +  post.getDescription()));
         tvTimestamp.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
+
+        // go to post creator's profile
+        tvUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toProfile(post.getUser());
+            }
+        });
+        ivProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toProfile(post.getUser());
+            }
+        });
+
         return view;
     }
 
@@ -122,5 +140,13 @@ public class PostDetailsFragment extends Fragment {
         }
 
         return "";
+    }
+
+    // go to profile page of post creator
+    public void toProfile(ParseUser user){
+        FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, ProfileFragment.newInstance(user));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
