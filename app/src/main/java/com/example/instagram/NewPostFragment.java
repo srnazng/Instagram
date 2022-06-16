@@ -1,5 +1,6 @@
 package com.example.instagram;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,12 +23,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,11 +45,15 @@ public class NewPostFragment extends Fragment {
     private Button btnPost;
     private ImageView btnTakePhoto;
     private ImageView ivPhoto;
+    private ImageView ivGallery;
 
     private File photoFile;
+    private ParseFile photoParseFile;
     private View view;
     public String photoFileName = "photo.jpg";
+
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 42;
+    public static final int GET_FROM_GALLERY = 3;
 
     public static final String TAG = "NewPostFragment";
 
@@ -72,7 +82,7 @@ public class NewPostFragment extends Fragment {
     private void savePost(String description, ParseUser currentUser, File photoFile) {
         Post post = new Post();
         post.setDescription(description);
-        post.setImage(new ParseFile(photoFile));
+        post.setImage(photoParseFile);
         post.setUser(currentUser);
         post.saveInBackground(new SaveCallback() {
             @Override
@@ -98,7 +108,9 @@ public class NewPostFragment extends Fragment {
        btnPost = view.findViewById(R.id.btnPost);
        btnTakePhoto = view.findViewById(R.id.btnTakePhoto);
        ivPhoto = view.findViewById(R.id.ivPhoto);
+       ivGallery = view.findViewById(R.id.ivGallery);
 
+       // button to open camera
        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -106,6 +118,7 @@ public class NewPostFragment extends Fragment {
            }
        });
 
+       // button to send post
        btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +127,7 @@ public class NewPostFragment extends Fragment {
                     Toast.makeText(getActivity(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(photoFile == null || ivPhoto.getDrawable() == null){
+                if(photoParseFile == null || ivPhoto.getDrawable() == null){
                     Toast.makeText(getActivity(), "No image", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -122,7 +135,25 @@ public class NewPostFragment extends Fragment {
                 savePost(description, currentUser, photoFile);
             }
        });
+
+       // button to choose image from gallery
+       ivGallery.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               startActivityForResult(new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI), GET_FROM_GALLERY);
+           }
+       });
+
        return view;
+    }
+
+    // convert bitmap image to ParseFile
+    public ParseFile conversionBitmapParseFile(Bitmap imageBitmap){
+        ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.PNG,100,byteArrayOutputStream);
+        byte[] imageByte = byteArrayOutputStream.toByteArray();
+        ParseFile parseFile = new ParseFile("image_file.png",imageByte);
+        return parseFile;
     }
 
     public void onLaunchCamera(View view) {
@@ -130,6 +161,7 @@ public class NewPostFragment extends Fragment {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Create a File reference for future access
         photoFile = getPhotoFileUri(photoFileName);
+        photoParseFile = new ParseFile(photoFile);
 
         // wrap File object into a content provider
         // required for API >= 24
@@ -162,6 +194,19 @@ public class NewPostFragment extends Fragment {
                 ivPhoto.setImageBitmap(takenImage);
             } else { // Result was a failure
                 Toast.makeText(getActivity(), "Picture wasn't taken!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
+                ivPhoto.setImageBitmap(bitmap);
+                photoParseFile = conversionBitmapParseFile(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
