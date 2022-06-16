@@ -133,6 +133,7 @@ public class ProfileFragment extends Fragment {
                 }
 
                 // save received posts to list and notify adapter of new data
+                allPosts.clear();
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
             }
