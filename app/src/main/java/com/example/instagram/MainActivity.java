@@ -16,7 +16,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public Fragment selectedFragment;
 
     private ImageView logo;
+    private androidx.appcompat.widget.Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +43,27 @@ public class MainActivity extends AppCompatActivity {
         selectedFragment = homeFragment;
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
 
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_post:
+                        toolbar.setVisibility(View.VISIBLE);
                         selectedFragment = newPostFragment;
                         break;
                     case R.id.action_profile:
+                        toolbar.setVisibility(View.GONE);
                         selectedFragment = profileFragment;
                         break;
                     case R.id.action_settings:
+                        toolbar.setVisibility(View.VISIBLE);
                         selectedFragment = settingsFragment;
                         break;
-                    default: selectedFragment = homeFragment;
+                    default:
+                        toolbar.setVisibility(View.VISIBLE);
+                        selectedFragment = homeFragment;
                 }
                 fragmentManager.beginTransaction().replace(R.id.frame, selectedFragment).commit();
                 return true;

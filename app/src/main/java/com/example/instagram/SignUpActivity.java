@@ -14,6 +14,8 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class SignUpActivity extends AppCompatActivity {
+    private EditText etName;
+    private EditText etBio;
     private EditText etEmail;
     private EditText etUsername;
     private EditText etPassword;
@@ -26,6 +28,8 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+        etName = findViewById(R.id.etName);
+        etBio = findViewById(R.id.etBio);
         etEmail = findViewById(R.id.etEmail);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
@@ -46,6 +50,8 @@ public class SignUpActivity extends AppCompatActivity {
         user.setUsername(etUsername.getText().toString());
         user.setPassword(etPassword.getText().toString());
         user.setEmail(etEmail.getText().toString());
+        user.put("name", etName.getText().toString());
+        user.put("bio", etBio.getText().toString());
 
         // Invoke signUpInBackground
         user.signUpInBackground(new SignUpCallback() {

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -36,7 +37,7 @@ import java.io.File;
 public class NewPostFragment extends Fragment {
     private EditText etDescription;
     private Button btnPost;
-    private Button btnTakePhoto;
+    private ImageView btnTakePhoto;
     private ImageView ivPhoto;
 
     private File photoFile;
