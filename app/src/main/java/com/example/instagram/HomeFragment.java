@@ -31,6 +31,12 @@ public class HomeFragment extends Fragment {
     protected List<Post> allPosts;
     private SwipeRefreshLayout swipeContainer;
 
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
+
+    // number of posts to retrieve
+    private int pageCount;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -55,12 +61,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void queryPosts() {
+        Log.i(TAG, "QUERY POSTS");
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // include data referred by user key
         query.include(Post.KEY_USER);
         // limit query to latest 20 items
         query.setLimit(20);
+        query.setSkip(pageCount*20 + 1);
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for posts
@@ -79,7 +87,6 @@ public class HomeFragment extends Fragment {
                 }
 
                 // save received posts to list and notify adapter of new data
-                allPosts.clear();
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
             }
@@ -92,6 +99,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        pageCount = 0;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         rvPosts = view.findViewById(R.id.rvPosts);
@@ -102,6 +110,21 @@ public class HomeFragment extends Fragment {
         rvPosts.setAdapter(adapter);
         // set the layout manager on the recycler view
         rvPosts.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                Log.i(TAG, "Load more " + pageCount);
+                pageCount++;
+                queryPosts();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvPosts.addOnScrollListener(scrollListener);
+
         // query posts from Parstagram
         queryPosts();
 
@@ -114,6 +137,7 @@ public class HomeFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+                allPosts.clear();
                 queryPosts();
             }
         });
@@ -122,6 +146,7 @@ public class HomeFragment extends Fragment {
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
+
         return view;
     }
 }

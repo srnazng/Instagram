@@ -52,17 +52,6 @@
         app:srcCompat="@drawable/nav_logo_whiteout" />
 
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="41dp"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSignUp"
-        app:layout_constraintVertical_bias="0.405"
-        app:srcCompat="@drawable/icon" />
-
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
