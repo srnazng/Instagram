@@ -182,15 +182,15 @@ public class PostDetailsFragment extends Fragment {
             } else if (diff < 2 * MINUTE_MILLIS) {
                 return "a minute ago";
             } else if (diff < 50 * MINUTE_MILLIS) {
-                return diff / MINUTE_MILLIS + " m";
+                return diff / MINUTE_MILLIS + " minutes ago";
             } else if (diff < 90 * MINUTE_MILLIS) {
                 return "an hour ago";
             } else if (diff < 24 * HOUR_MILLIS) {
-                return diff / HOUR_MILLIS + " h";
+                return diff / HOUR_MILLIS + " hours ago";
             } else if (diff < 48 * HOUR_MILLIS) {
                 return "yesterday";
             } else {
-                return diff / DAY_MILLIS + " d";
+                return diff / DAY_MILLIS + " days ago";
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -240,7 +240,7 @@ public class PostDetailsFragment extends Fragment {
         // specify what type of data we want to query - Like.class
         ParseQuery<Like> query = ParseQuery.getQuery(Like.class).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser()).whereEqualTo(Like.KEY_POST, post);
         // include data referred by user key
-        query.include(Like.KEY_USER).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+        query.include(Like.KEY_USER);
 
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Like>() {
@@ -261,10 +261,10 @@ public class PostDetailsFragment extends Fragment {
                             //Deletes the fetched ParseObject from the database
                             object.deleteInBackground(e3 -> {
                                 if (e3 == null) {
-                                    Toast.makeText(getActivity(), "Delete Successful", Toast.LENGTH_SHORT).show();
+                                    Log.i(TAG, "delete like success");
                                 } else {
                                     //Something went wrong while deleting the Object
-                                    Toast.makeText(getActivity(), "Error: " + e3.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Log.i(TAG, "delete like failure");
                                 }
                             });
                         } else {

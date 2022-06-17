@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="10dp"
         android:paddingTop="5dp"
-        android:paddingBottom="20dp"
+        android:paddingBottom="5dp"
         android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -79,5 +79,15 @@
         app:layout_constraintStart_toStartOf="@+id/ivHeart"
         app:layout_constraintTop_toBottomOf="@+id/ivHeart"
         tools:text="10 likes" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="20dp"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/tvLikes"
+        app:layout_constraintTop_toBottomOf="@+id/tvDescription"
+        tools:text="just now" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

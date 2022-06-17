@@ -24,7 +24,9 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
     private Context context;
@@ -76,6 +78,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private TextView tvDescription;
         private ImageView ivHeart;
         private TextView tvLikes;
+        private TextView tvTime;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,6 +88,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvDescription = itemView.findViewById(R.id.tvDescription);
             ivHeart = itemView.findViewById(R.id.ivHeart);
             tvLikes = itemView.findViewById(R.id.tvLikes);
+            tvTime = itemView.findViewById(R.id.tvTime);
         }
 
         public void bind(Post post) {
@@ -97,6 +101,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 }
             });
             tvUsername.setText(post.getUser().getUsername());
+            tvTime.setText(getRelativeTimeAgo(post.getCreatedAt().toString()));
 
             // go to post creator's profile
             tvUsername.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +186,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
         }
 
+        // go to details fragment of post
         public void toDetails(Post post, String likeStatus){
             FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frame, PostDetailsFragment.newInstance(post, likeStatus));
@@ -188,6 +194,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             fragmentTransaction.commit();
         }
 
+        // go to profile fragment of post's creator
         public void toProfile(ParseUser user){
             FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frame, ProfileFragment.newInstance(user));
@@ -228,7 +235,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             // specify what type of data we want to query - Like.class
             ParseQuery<Like> query = ParseQuery.getQuery(Like.class).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser()).whereEqualTo(Like.KEY_POST, post);
             // include data referred by user key
-            query.include(Like.KEY_USER).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+            query.include(Like.KEY_USER);
 
             // start an asynchronous call for posts
             query.findInBackground(new FindCallback<Like>() {
@@ -249,15 +256,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                                 //Deletes the fetched ParseObject from the database
                                 object.deleteInBackground(e3 -> {
                                     if(e3==null){
-                                        Toast.makeText(context, "Delete Successful", Toast.LENGTH_SHORT).show();
+                                        Log.i(TAG, "delete like successful");
                                     }else{
                                         //Something went wrong while deleting the Object
-                                        Toast.makeText(context, "Error: "+e3.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Log.e(TAG, "delete like failure");
                                     }
                                 });
                             }else{
                                 //Something went wrong
-                                Toast.makeText(context, e2.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, "get likes failure");
                             }
                         });
 
@@ -278,6 +285,44 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 }
             });
         }
+    }
+
+    private static final int SECOND_MILLIS = 1000;
+    private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;
+    private static final int HOUR_MILLIS = 60 * MINUTE_MILLIS;
+    private static final int DAY_MILLIS = 24 * HOUR_MILLIS;
+
+    public String getRelativeTimeAgo(String rawJsonDate) {
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        try {
+            long time = sf.parse(rawJsonDate).getTime();
+            long now = System.currentTimeMillis();
+
+            final long diff = now - time;
+            if (diff < MINUTE_MILLIS) {
+                return "just now";
+            } else if (diff < 2 * MINUTE_MILLIS) {
+                return "a minute ago";
+            } else if (diff < 50 * MINUTE_MILLIS) {
+                return diff / MINUTE_MILLIS + " minutes ago";
+            } else if (diff < 90 * MINUTE_MILLIS) {
+            } else if (diff < 90 * MINUTE_MILLIS) {
+                return "an hour ago";
+            } else if (diff < 24 * HOUR_MILLIS) {
+                return diff / HOUR_MILLIS + " hours ago";
+            } else if (diff < 48 * HOUR_MILLIS) {
+                return "yesterday";
+            } else {
+                return diff / DAY_MILLIS + " days ago";
+            }
+        } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }
 

@@ -2,7 +2,7 @@
 
 **Instagram** is a photo sharing app using Parse as its backend.
 
-Time spent: **X** hours spent in total
+Time spent: **25** hours spent in total
 
 ## User Stories
 
@@ -27,26 +27,26 @@ The following **stretch** features are implemented:
     - [X] Feed Tab (to view all posts from all users)
     - [X] Capture Tab (to make a new post using the Camera and Photo Gallery)
     - [X] Profile Tab (to view only the current user's posts, in a grid)
-- [ ] Show the username and creation time for each post
+- [X] Show the username and creation time for each post
 - User Profiles:
     - [X] Allow the logged in user to add a profile photo
     - [X] Display the profile photo with each post
-    - [ ] Tapping on a post's username or profile photo goes to that user's profile page
-    - [ ] User Profile shows posts in a grid
+    - [X] Tapping on a post's username or profile photo goes to that user's profile page
+    - [X] User Profile shows posts in a grid
 - [ ] After the user submits a new post, show an indeterminate progress bar while the post is being uploaded to Parse
 - [ ] User can comment on a post and see all comments for each post in the post details screen.
-- [ ] User can like a post and see number of likes for each post in the post details screen.
+- [X] User can like a post and see number of likes for each post in the post details screen.
 
 The following **additional** features are implemented:
 
 - [X] Make posts using photos from gallery
 - [X] Add profile name and biography
 - [X] Edit profile photo, name, and biography
+- [X] User can like a post and see number of likes for each post in the post home feed screen
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. Better ways to determine if a post has been liked by a user
 
 ## Video Walkthrough
 
@@ -69,7 +69,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2022] [Serena Zeng]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

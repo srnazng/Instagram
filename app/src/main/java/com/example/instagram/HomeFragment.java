@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
         query.include(Post.KEY_USER);
         // limit query to latest 20 items
         query.setLimit(20);
-        query.setSkip(pageCount*20 + 1);
+        query.setSkip(pageCount*20);
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for posts
@@ -115,6 +115,12 @@ public class HomeFragment extends Fragment {
         if(swipeContainer != null){
             swipeContainer.setRefreshing(false);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        queryPosts();
     }
 
     @Override
