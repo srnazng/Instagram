@@ -166,6 +166,7 @@ public class HomeFragment extends Fragment {
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
                 allPosts.clear();
+                adapter.clear();
                 queryPosts();
             }
         });
