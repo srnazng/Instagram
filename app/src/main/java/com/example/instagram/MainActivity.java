@@ -21,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.parse.Parse;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity {
@@ -72,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         logo = findViewById(R.id.ivTitleLogo);
+
+        ParseObject.registerSubclass(Post.class);
+        ParseObject.registerSubclass(Like.class);
     }
 
     public void setSelectedFragment(Fragment selectedFragment) {

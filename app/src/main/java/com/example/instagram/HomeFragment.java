@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView rvPosts;
     protected PostsAdapter adapter;
     protected List<Post> allPosts;
+    protected List<Like> allLikes;
     private SwipeRefreshLayout swipeContainer;
 
     // Store a member variable for the listener
@@ -60,7 +62,31 @@ public class HomeFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    private void getLiked () {
+        // specify what type of data we want to query - Like.class
+        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+        // include data referred by user key
+        query.include(Like.KEY_USER).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<Like>() {
+            @Override
+            public void done(List<Like> likes, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+
+                // save received posts to list and notify adapter of new data
+                allLikes.clear();
+                allLikes.addAll(likes);
+            }
+        });
+    }
+
     private void queryPosts() {
+        getLiked();
         Log.i(TAG, "QUERY POSTS");
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
@@ -79,11 +105,6 @@ public class HomeFragment extends Fragment {
                 if (e != null) {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getDescription() + ", username: " + post.getUser().getUsername());
                 }
 
                 // save received posts to list and notify adapter of new data
@@ -105,7 +126,8 @@ public class HomeFragment extends Fragment {
         rvPosts = view.findViewById(R.id.rvPosts);
         // initialize the array that will hold posts and create a PostsAdapter
         allPosts = new ArrayList<>();
-        adapter = new PostsAdapter(getContext(), allPosts);
+        allLikes = new ArrayList<>();
+        adapter = new PostsAdapter(getContext(), allPosts, allLikes);
         // set the adapter on the recycler view
         rvPosts.setAdapter(adapter);
         // set the layout manager on the recycler view
