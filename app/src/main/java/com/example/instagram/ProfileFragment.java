@@ -60,6 +60,7 @@ public class ProfileFragment extends Fragment {
     public static final int GET_FROM_GALLERY = 3;
 
     private List<Post> allPosts;
+    private List<Like> allLikes;
 
     private GridPostsAdapter adapter;
 
@@ -85,6 +86,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         allPosts = new ArrayList<>();
+        allLikes = new ArrayList<>();
 
         if (getArguments() != null) {
             user = getArguments().getParcelable("user");
@@ -193,7 +195,7 @@ public class ProfileFragment extends Fragment {
         // set up the RecyclerView
         int numberOfColumns = 3;
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), numberOfColumns));
-        adapter = new GridPostsAdapter(getActivity(), allPosts);
+        adapter = new GridPostsAdapter(getActivity(), allPosts, allLikes);
         recyclerView.setAdapter(adapter);
 
         // styling of columns in grid
@@ -258,6 +260,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void getUserPosts(){
+        getLiked();
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class).whereEqualTo("user", user);
         Log.i(TAG, user.getObjectId());
@@ -286,6 +289,30 @@ public class ProfileFragment extends Fragment {
                 allPosts.clear();
                 allPosts.addAll(posts);
                 adapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    // get liked photos
+    private void getLiked () {
+        // specify what type of data we want to query - Like.class
+        ParseQuery<Like> query = ParseQuery.getQuery(Like.class);
+        // include data referred by user key
+        query.include(Like.KEY_USER).whereEqualTo(Like.KEY_USER, ParseUser.getCurrentUser());
+
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<Like>() {
+            @Override
+            public void done(List<Like> likes, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+
+                // save received posts to list and notify adapter of new data
+                allLikes.clear();
+                allLikes.addAll(likes);
             }
         });
     }

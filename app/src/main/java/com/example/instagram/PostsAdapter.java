@@ -93,7 +93,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             tvDescription.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    toDetails(post);
+                    toDetails(post, ivHeart.getContentDescription().toString());
                 }
             });
             tvUsername.setText(post.getUser().getUsername());
@@ -169,7 +169,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 ivImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        toDetails(post);
+                        toDetails(post, ivHeart.getContentDescription().toString());
                     }
                 });
             }
@@ -181,9 +181,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             }
         }
 
-        public void toDetails(Post post){
+        public void toDetails(Post post, String likeStatus){
             FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.frame, PostDetailsFragment.newInstance(post));
+            fragmentTransaction.replace(R.id.frame, PostDetailsFragment.newInstance(post, likeStatus));
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
