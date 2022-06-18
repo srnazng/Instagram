@@ -43,6 +43,7 @@ The following **additional** features are implemented:
 - [X] Add profile name and biography
 - [X] Edit profile photo, name, and biography
 - [X] User can like a post and see number of likes for each post in the post home feed screen
+- [X] User can comment on a post and see all comments for each post in the post home feed screen
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
@@ -52,7 +53,7 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-![insta](https://user-images.githubusercontent.com/31111505/174375698-6e67505c-f8fd-4293-9032-b4316044ea5e.gif)
+![demo](https://user-images.githubusercontent.com/31111505/174416808-a850959a-5267-489d-81ed-0c7cc613d4e5.gif)
 
 GIF created with [Kap](https://getkap.co/).
 
