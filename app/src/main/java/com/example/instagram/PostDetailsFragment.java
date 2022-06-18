@@ -1,5 +1,6 @@
 package com.example.instagram;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,7 @@ public class PostDetailsFragment extends Fragment {
     private ImageView ivProfilePhoto;
     private ImageView ivLike;
     private TextView tvLikeNum;
+    private ImageView ivComment;
 
     private Post post;
     private String likeStatus;
@@ -102,6 +104,13 @@ public class PostDetailsFragment extends Fragment {
         tvTimestamp = view.findViewById(R.id.tvTimestamp);
         tvDescription = view.findViewById(R.id.tvDescription);
         tvUsername = view.findViewById(R.id.tvUsername);
+        ivComment = view.findViewById(R.id.ivComment);
+        ivComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toComments();
+            }
+        });
         ivImage = view.findViewById(R.id.ivImage);
         if (post.getImage() != null) {
             Glide.with(this).load(post.getImage().getUrl()).into(ivImage);
@@ -203,6 +212,14 @@ public class PostDetailsFragment extends Fragment {
     public void toProfile(ParseUser user) {
         FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frame, ProfileFragment.newInstance(user));
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    // go to profile page of post creator
+    public void toComments() {
+        FragmentTransaction fragmentTransaction = (getActivity()).getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, CommentsFragment.newInstance(post));
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }

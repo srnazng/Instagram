@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Like.class);
+        ParseObject.registerSubclass(Comment.class);
     }
 
     public void setSelectedFragment(Fragment selectedFragment) {
