@@ -55,6 +55,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public TextView tvComment;
+        public TextView tvCommenter;
         public ImageView ivCommentProfile;
         public Button btnSend;
 
@@ -64,6 +65,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
+            tvCommenter = itemView.findViewById(R.id.tvCommenter);
             tvComment = itemView.findViewById(R.id.tvComment);
             ivCommentProfile = itemView.findViewById(R.id.ivCommentProfile);
             btnSend = itemView.findViewById(R.id.btnSend);
@@ -71,6 +73,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         public void bind(Comment comment){
             tvComment.setText(comment.getText());
+            tvCommenter.setText(comment.getUser().getUsername());
             ParseFile profile =  comment.getUser().getParseFile("profileImage");
             if (profile != null) {
                 Glide.with(context).load(profile.getUrl()).apply(RequestOptions.circleCropTransform()).into(ivCommentProfile);
