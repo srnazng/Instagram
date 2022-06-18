@@ -77,6 +77,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         private ImageView ivImage;
         private TextView tvDescription;
         private ImageView ivHeart;
+        private ImageView ivSpeechBubble;
         private TextView tvLikes;
         private TextView tvTime;
 
@@ -86,6 +87,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             ivProfile = itemView.findViewById(R.id.ivProfile);
             ivImage = itemView.findViewById(R.id.ivImage);
             tvDescription = itemView.findViewById(R.id.tvDescription);
+            ivSpeechBubble = itemView.findViewById(R.id.ivSpeechBubble);
             ivHeart = itemView.findViewById(R.id.ivHeart);
             tvLikes = itemView.findViewById(R.id.tvLikes);
             tvTime = itemView.findViewById(R.id.tvTime);
@@ -166,6 +168,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 }
             });
 
+            // go to comments fragment for post
+            ivSpeechBubble.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toComments(post);
+                }
+            });
+
             // show image
             ParseFile image = post.getImage();
             if (image != null) {
@@ -198,6 +208,14 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         public void toProfile(ParseUser user){
             FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frame, ProfileFragment.newInstance(user));
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
+
+        // go to profile page of post creator
+        public void toComments(Post post) {
+            FragmentTransaction fragmentTransaction = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.frame, CommentsFragment.newInstance(post));
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
